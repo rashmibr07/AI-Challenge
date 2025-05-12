@@ -13,13 +13,21 @@ export async function handleCreateTicket(summary: string, description: string, p
 
     // 2. If similar tickets are found, summarize and skip creation
     if (similar.length > SIMILARITY_THRESHOLD) {
-      const summary = await summarizeTickets(similar);
-      return `:warning: Found similar tickets:\n${summary}\n\nSkipping creation.`;
-    }
+      const summarized = await summarizeTickets(similar);
 
+      const similarList = similar.map(ticket => {
+        const ticketUrl = `https://capillarytech.atlassian.net/browse/${ticket.key}`;
+        return `• <${ticketUrl}|${ticket.key}>: ${ticket.summary}`;
+      }).join('\n');
+
+      return `:warning: Found similar tickets:\n${similarList}\n\n*Summary of related issues:*\n${summarized}\n\nSkipping creation. If you still want to create a new ticket, please re-run the slash command.`;
+    }
+  
     // 3. If no similar ticket, create a new one
     const ticketKey = await createJiraTicket(summary, description, priority, brand, env, components);
-    return `:white_check_mark: Created ticket *${ticketKey}*`;
+    const ticketUrl = `https://capillarytech.atlassian.net/jira/software/c/projects/CJ/issues/${ticketKey}`;
+    return `:white_check_mark: Created ticket: <${ticketUrl}|${ticketKey}>`;
+    //return `:white_check_mark: Created ticket *${ticketKey}*`;
   } catch (error) {
     console.error("Error in handleCreateTicket:", error);
     return ":x: Failed to create ticket due to an internal error.";
