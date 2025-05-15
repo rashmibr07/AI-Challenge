@@ -2,6 +2,9 @@ import axios from "axios";
 import { getEmbedding, cosineSimilarity,summarizeText } from "./openaiUtils";
 
 
+const TICKET_SEARCH_SPACE_LIMIT = 10
+const MATCH_SCORE_THRESHOLD = 0.85
+
 export async function createJiraTicket(summary: string, description: string, priority: string, brand:string, env:string, components:string): Promise<string> {
       let template  = {
         "fields": {
@@ -95,8 +98,13 @@ export async function findSimilarTickets(text: string): Promise<any[]> {
     const res = await axios.get(`${process.env.JIRA_BASE_URL!}/rest/api/3/search`, {
         params: {
             jql,
-            fields: "summary",
-            maxResults: 10,
+            fields: [
+                "summary",
+                "status",
+                "assignee",
+                "priority"
+              ],
+            maxResults: TICKET_SEARCH_SPACE_LIMIT,
         },
         auth: {
             username: process.env.JIRA_EMAIL!,
@@ -110,8 +118,15 @@ export async function findSimilarTickets(text: string): Promise<any[]> {
     for (const issue of issues) {
         const issueEmbedding = await getEmbedding(issue.fields.summary);
         const score = cosineSimilarity(embedding, issueEmbedding);
-        if (score > 0.85) {
-            results.push({ key: issue.key, summary: issue.fields.summary, score });
+        if (score > MATCH_SCORE_THRESHOLD) {
+            results.push({  
+                            ticketId: issue.key,
+                            summary: issue.fields.summary,
+                            priority: issue.fields.priority.name,
+                            status: issue.fields.status.name,
+                            assignee: issue.fields.assignee?.emailAddress || "",
+                            ticketLink: "https://capillarytech.atlassian.net/jira/software/c/projects/CJ/issues/"+issue.key+"?jql=project%20%3D%20%22CJ%22%20ORDER%20BY%20created%20DESC"
+                         });
         }
     }
 
