@@ -1,5 +1,8 @@
 import axios from "axios";
 
+/**
+ * Fetches embeddings using the OpenAI embedding model.
+ */
 export async function getEmbedding(text: string): Promise<number[]> {
     const response = await axios.post(
         "https://api.openai.com/v1/embeddings",
@@ -18,6 +21,9 @@ export async function getEmbedding(text: string): Promise<number[]> {
     return response.data.data[0].embedding;
   }
 
+/**
+ * Calculates cosine similarity between two vectors.
+ */
 export function cosineSimilarity(vecA: number[], vecB: number[]): number {
     const dotProduct = vecA.reduce((sum, a, i) => sum + a * vecB[i], 0);
     const magnitudeA = Math.sqrt(vecA.reduce((sum, a) => sum + a * a, 0));
