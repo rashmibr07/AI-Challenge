@@ -185,7 +185,7 @@ app.view('create_ticket_submission', async ({ ack, view, body, client }) => {
 });
 
 
-app.command('/create', async ({ command, ack, client }) => {
+app.command('/new-pain', async ({ command, ack, client }) => {
   
   await ack();
 
