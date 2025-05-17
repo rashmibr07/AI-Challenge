@@ -52,12 +52,16 @@ const modalView = {
             value: 'Medium-P2'
           },
           {
-            text: { type: 'plain_text', text: 'Medium' },
-            value: 'medium'
+            text: { type: 'plain_text', text: 'Highest-P0' },
+            value: 'Highest-P0'
           },
           {
-            text: { type: 'plain_text', text: 'Low' },
-            value: 'low'
+            text: { type: 'plain_text', text: 'High-P1' },
+            value: 'High-P1'
+          },
+          {
+            text: { type: 'plain_text', text: 'Low-P3' },
+            value: 'Low-P3'
           }
         ]
       }
@@ -76,11 +80,11 @@ const modalView = {
           },
           {
             text: { type: 'plain_text', text: 'Abbott' },
-            value: 'abbott'
+            value: 'Abbott'
           },
           {
             text: { type: 'plain_text', text: 'Aape' },
-            value: 'aape'
+            value: 'Aape'
           }
         ]
       }
@@ -95,11 +99,11 @@ const modalView = {
         options: [
           {
             text: { type: 'plain_text', text: 'Prod' },
-            value: 'prod'
+            value: 'Prod'
           },
           {
             text: { type: 'plain_text', text: 'UAT' },
-            value: 'uat'
+            value: 'UAT'
           },
           {
             text: { type: 'plain_text', text: 'Demo' },
