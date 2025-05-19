@@ -5,7 +5,7 @@ import { getEmbedding, cosineSimilarity,summarizeText } from "./openaiUtils";
 const TICKET_SEARCH_SPACE_LIMIT = 10
 const MATCH_SCORE_THRESHOLD = 0.85
 
-export async function createJiraTicket(summary: string, description: string, priority: string, brand:string, env:string, components:string): Promise<string> {
+export async function createJiraTicket(issuetype: string,summary: string, description: string, priority: string, brand:string, env:string, components:string): Promise<string> {
       let template  = {
         "fields": {
             "project": {
@@ -44,7 +44,7 @@ export async function createJiraTicket(summary: string, description: string, pri
       let payload ={
         fields: {
             project: { id: "11693" },
-            issuetype: { id: "10300" },
+            issuetype: { id: issuetype },
             summary:summary,
             priority: {
               "id": "3",
