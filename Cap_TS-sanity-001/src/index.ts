@@ -21,6 +21,66 @@ const modalView = {
   },
   blocks: [
     {
+      "type": "input",
+      "block_id": "issuetype_block",
+      "label": {
+        "type": "plain_text",
+        "text": "Work Type"
+      },
+      "element": {
+        "type": "static_select",
+        "action_id": "issuetype_action",
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Select a work type"
+        },
+        "options": [
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "Bug"
+            },
+            "value": "10300"  
+          },
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "Enhancement"
+            },
+            "value": "10304"  
+          },
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "Task"
+            },
+            "value": "10302"  
+          },
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "Story"
+            },
+            "value": "10306"  
+          },
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "Release"
+            },
+            "value": "10301"  
+          },
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "Epic"
+            },
+            "value": "10311"
+          }
+        ]
+      }
+    },    
+    {
       type: 'input',
       block_id: 'summary_block',
       label: { type: 'plain_text', text: 'Summary' },
@@ -106,6 +166,10 @@ const modalView = {
             value: 'UAT'
           },
           {
+            text: { type: 'plain_text', text: 'Go-Live' },
+            value: 'Go-Live'
+          },
+          {
             text: { type: 'plain_text', text: 'Demo' },
             value: 'Demo'
           }
@@ -161,7 +225,7 @@ app.view('create_ticket_submission', async ({ ack, view, body, client }) => {
     await ack(); // Always ack early
 
     const values = view.state.values;
-
+    const issuetype:any = view.state.values.issuetype_block.issuetype_action.selected_option?.value;
     const summary:any = values.summary_block.summary_input.value;
     const description:any = values.description_block.description_input.value;
     const priority:any = values.priority_block.priority_input.selected_option?.value;
@@ -169,7 +233,7 @@ app.view('create_ticket_submission', async ({ ack, view, body, client }) => {
     const environment:any = values.env_block.env_input.selected_option?.value;
     const components:any = values.component_block.component_input.selected_option?.value;
 
-    const response = await handleCreateTicket(summary, description, priority, brand, environment, components);
+    const response = await handleCreateTicket(issuetype,summary, description, priority, brand, environment, components);
 
     // Optional: send user confirmation
     await client.chat.postMessage({
